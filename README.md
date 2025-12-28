@@ -1,4 +1,4 @@
-# PyQuote - Stock Quote Updater
+# PyQuote - Accumulates intraday stock quotes
 
 A Python application that fetches intraday minute-level stock quotes from the yFinance API and stores them in a MySQL database. This application can be used to accumulate a historical database of minute quotes for a designated list of stocks.
 
