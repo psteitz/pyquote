@@ -81,8 +81,8 @@ class StockQuoteUpdater:
     
     def _get_stock_id(self, ticker: str) -> int:
         """
-        Look up stock ID by ticker symbol. If not found, validates ticker with yFinance
-        and inserts a new record if valid.
+        Look up stock ID by ticker symbol. If not found, validates ticker with yFinance,
+        retrieves the company name, and inserts a new record if valid.
         
         Args:
             ticker: The stock ticker symbol
@@ -112,14 +112,18 @@ class StockQuoteUpdater:
                 cursor.close()
                 raise Exception(f"Invalid ticker '{ticker}': not found in yFinance API")
             
-            # Insert new stock record
-            insert_query = "INSERT INTO stocks (ticker) VALUES (%s)"
-            cursor.execute(insert_query, (ticker,))
+            # Retrieve company name from yFinance info
+            company_name = stock_data.info.get('longName', ticker)
+            self.logger.debug(f"Retrieved company name for '{ticker}': {company_name}")
+            
+            # Insert new stock record with ticker and company name
+            insert_query = "INSERT INTO stocks (ticker, name) VALUES (%s, %s)"
+            cursor.execute(insert_query, (ticker, company_name))
             self.db_connection.commit()
             
             new_id = cursor.lastrowid
             cursor.close()
-            self.logger.info(f"Inserted new stock record for ticker '{ticker}' with ID {new_id}")
+            self.logger.info(f"Inserted new stock record for ticker '{ticker}' (name: {company_name}) with ID {new_id}")
             
             return new_id
             

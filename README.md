@@ -67,6 +67,7 @@ USE tinker;
 CREATE TABLE stocks (
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     ticker VARCHAR(45) UNIQUE NOT NULL,
+    name VARCHAR(255),
     lastUpdate DATETIME
 );
 
@@ -79,14 +80,15 @@ CREATE TABLE quotes (
     UNIQUE KEY unique_stock_timestamp (stock, timestamp)
 );
 
--- Insert stocks to be tracked
--- These also need to go in the static 'tickers' list in the code
--- Note: You do not need to pre-populate the stocks table
+-- Insert stocks to be tracked.
+-- These also need to go in the static 'tickers' list in the code.
+-- Note: You do not need to pre-populate the stocks table.
 -- The application will automatically validate and insert new stock tickers using yFinance
+-- and automatically retrieve and store the company name from yFinance data.
 -- However, you can optionally pre-insert stocks if desired:
-INSERT INTO stocks (ticker) VALUES 
-('AAPL'), ('MSFT'), ('GOOGL'), ('AMZN'), ('TSLA'),
-('META'), ('NVDA'), ('JPM'), ('V'), ('WMT');
+INSERT INTO stocks (ticker, name) VALUES 
+('AAPL', 'Apple Inc.'), ('MSFT', 'Microsoft Corporation'), ('GOOGL', 'Alphabet Inc.'), ('AMZN', 'Amazon.com Inc.'), ('TSLA', 'Tesla Inc.'),
+('META', 'Meta Platforms Inc.'), ('NVDA', 'NVIDIA Corporation'), ('JPM', 'JPMorgan Chase & Co.'), ('V', 'Visa Inc.'), ('WMT', 'Walmart Inc.');
 -- ... add more stocks as needed
 ```
 
@@ -243,6 +245,7 @@ pytest test_pyquote.py::TestIntegration -v
 |--------|------|-------|
 | id | INT UNSIGNED | Primary key, auto-increment |
 | ticker | VARCHAR(45) | Stock ticker symbol (unique) |
+| name | VARCHAR(255) | Company name (retrieved from yFinance) |
 | lastUpdate | DATETIME | Last quote timestamp for this stock |
 
 ### quotes table

@@ -186,9 +186,9 @@ class TestStockLookup:
         mock_connection.commit = MagicMock()
         mock_connect.return_value = mock_connection
         
-        # Mock yFinance ticker as valid
+        # Mock yFinance ticker as valid with company name
         mock_stock = MagicMock()
-        mock_stock.info = {'symbol': 'TSLA'}
+        mock_stock.info = {'symbol': 'TSLA', 'longName': 'Tesla Inc.'}
         mock_ticker.return_value = mock_stock
         
         updater = StockQuoteUpdater(password="test_pass", log_file=log_file)
@@ -197,10 +197,16 @@ class TestStockLookup:
         stock_id = updater._get_stock_id('TSLA')
         
         assert stock_id == 100
-        # Verify INSERT was called
+        # Verify INSERT was called with both ticker and company name
         calls = mock_cursor.execute.call_args_list
         assert len(calls) == 2  # SELECT then INSERT
         assert "INSERT INTO stocks" in calls[1][0][0]
+        # Verify the INSERT query includes the name column
+        insert_query = calls[1][0][0]
+        assert "(ticker, name)" in insert_query
+        # Verify the values passed to INSERT include the company name
+        insert_values = calls[1][0][1]
+        assert insert_values == ('TSLA', 'Tesla Inc.')
         mock_connection.commit.assert_called_once()
     
     @patch('yfinance.Ticker')
@@ -240,6 +246,71 @@ class TestStockLookup:
         
         with pytest.raises(mysql.connector.Error):
             updater._get_stock_id('AAPL')
+    
+    @patch('yfinance.Ticker')
+    @patch('mysql.connector.connect')
+    def test_get_stock_id_retrieves_company_name(self, mock_connect, mock_ticker, tmp_path):
+        """Test that company name is retrieved from yFinance and stored."""
+        log_file = str(tmp_path / "test.log")
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        
+        # Mock stock not found initially
+        mock_cursor.fetchone.return_value = None
+        mock_cursor.lastrowid = 42
+        mock_connection.cursor.return_value = mock_cursor
+        mock_connection.commit = MagicMock()
+        mock_connect.return_value = mock_connection
+        
+        # Mock yFinance with full company name
+        mock_stock = MagicMock()
+        mock_stock.info = {'symbol': 'MSFT', 'longName': 'Microsoft Corporation'}
+        mock_ticker.return_value = mock_stock
+        
+        updater = StockQuoteUpdater(password="test_pass", log_file=log_file)
+        updater.db_connection = mock_connection
+        
+        stock_id = updater._get_stock_id('MSFT')
+        
+        assert stock_id == 42
+        # Verify that yFinance Ticker was called with the ticker
+        mock_ticker.assert_called_once_with('MSFT')
+        # Verify INSERT includes company name
+        calls = mock_cursor.execute.call_args_list
+        insert_values = calls[1][0][1]
+        assert insert_values == ('MSFT', 'Microsoft Corporation')
+    
+    @patch('yfinance.Ticker')
+    @patch('mysql.connector.connect')
+    def test_get_stock_id_fallback_to_ticker_as_name(self, mock_connect, mock_ticker, tmp_path):
+        """Test that ticker is used as company name if longName is not available."""
+        log_file = str(tmp_path / "test.log")
+        mock_connection = MagicMock()
+        mock_cursor = MagicMock()
+        
+        # Mock stock not found initially
+        mock_cursor.fetchone.return_value = None
+        mock_cursor.lastrowid = 50
+        mock_connection.cursor.return_value = mock_cursor
+        mock_connection.commit = MagicMock()
+        mock_connect.return_value = mock_connection
+        
+        # Mock yFinance without longName field
+        mock_stock = MagicMock()
+        mock_stock.info = {'symbol': 'NVDA'}  # No 'longName' key
+        mock_ticker.return_value = mock_stock
+        
+        updater = StockQuoteUpdater(password="test_pass", log_file=log_file)
+        updater.db_connection = mock_connection
+        
+        stock_id = updater._get_stock_id('NVDA')
+        
+        assert stock_id == 50
+        # Verify INSERT falls back to ticker when longName is not available
+        calls = mock_cursor.execute.call_args_list
+        insert_values = calls[1][0][1]
+        # When longName is missing, it should use the ticker as the default
+        assert insert_values == ('NVDA', 'NVDA')
 
 
 class TestQuoteExists:
