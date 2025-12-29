@@ -18,13 +18,13 @@ class StockQuoteUpdater:
     """Class to fetch and store stock quotes from yFinance to MySQL database."""
     
     # Static list of ticker symbols to fetch quotes for
-    tickers = [ "AA", "AAL", "AAPL", "ACET", "ADBE", "ADP", "AMAT", "AMD", "AMZN", "AXP", "BABA", "BAC", "BKNG",
-        "C", "CCL", "CALA", "CMCSA", "COF", "CRM", "CSCO", "CVX", "CX", "DAL", "DIS", "F",
-        "FOXA", "GE", "GS", "HAL", "HBAN", "HD", "IJK", "INTC", "JBLU", "JD", "JNJ", "JPM",
-        "KHC", "KO", "LCID", "LOW", "LUV", "M", "MA", "MNKD", "MMM", "MRK", "MRNA", "MS", "MSFT", "NFLX",
-        "NOK", "NVDA", "NXE", "PBR", "PCTY", "PFE", "PINS", "PYPL", "QCOM", "QQQ", "RIOT", "RIVN", "SABR", "SBUX",
-        "SEDG", "SFM", "SHOP", "SPY", "SQQQ", "T", "TSLA", "TSN", "UAL", "UBER", "V", "VGLT", "VTI", "VXX",
-        "WFC", "XOMA", "XRX", "WMT", "WRN", "YELP", "ZM"]
+    tickers = [ "AA", "AAL", "AAPL", "ACET", "ADBE", "ADP", "AMAT", "AMD", "AMZN","ARM", "AVGO", "AXP",
+        "BABA", "BAC", "BKNG", "C", "CCL", "CALA", "CAT", "CMCSA", "COF", "CRM", "CSCO", "CVX", "CX",
+        "DAL", "DIS", "F", "FOXA", "GE", "GS", "HAL", "HBAN", "HD","IBM", "IJK", "INTC", "JBLU", "JD", "JNJ", "JPM",
+        "KHC", "KO", "LCID", "LITE", "LOW", "LUV", "M", "MA", "MNKD", "MMM", "MRK", "MRNA", "MS", "M SFT","MU",
+        "NFLX", "NKE", "NOK", "NOW", "NVDA", "NXE", "PBR", "PCTY","PEP", "PFE", "PINS","PLTR", "PYPL", "QCOM", "QQQ",
+        "RIOT", "RIVN", "RPGL", "SABR", "SBUX", "SEDG", "SFM", "SHOP", "SIDU", "SPGI", "SPY", "SQQQ", "T","TGT", "TSLA","TSM",
+        "TSN", "UAL", "UNH", "UBER", "V", "VGLT", "VTI", "VXX", "WFC", "XOM", "XOMA", "XRX", "WMT", "WRN", "YELP", "ZM"]
     
     def __init__(self, lookback_days: int = 28, password: str = None, log_file: str = None, debug_mode: bool = False):
         """
