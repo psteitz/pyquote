@@ -21,7 +21,7 @@ class StockQuoteUpdater:
     tickers = [ "AA", "AAL", "AAPL", "ACET", "ADBE", "ADP", "AMAT", "AMD", "AMZN","ARM", "AVGO", "AXP",
         "BABA", "BAC", "BKNG", "C", "CCL", "CALA", "CAT", "CMCSA", "COF", "CRM", "CSCO", "CVX", "CX",
         "DAL", "DIS", "F", "FOXA", "GE", "GS", "HAL", "HBAN", "HD","IBM", "IJK", "INTC", "JBLU", "JD", "JNJ", "JPM",
-        "KHC", "KO", "LCID", "LITE", "LOW", "LUV", "M", "MA", "MNKD", "MMM", "MRK", "MRNA", "MS", "M SFT","MU",
+        "KHC", "KO", "LCID", "LITE", "LOW", "LUV", "M", "MA", "MNKD", "MMM", "MRK", "MRNA", "MS", "MSFT","MU",
         "NFLX", "NKE", "NOK", "NOW", "NVDA", "NXE", "PBR", "PCTY","PEP", "PFE", "PINS","PLTR", "PYPL", "QCOM", "QQQ",
         "RIOT", "RIVN", "RPGL", "SABR", "SBUX", "SEDG", "SFM", "SHOP", "SIDU", "SPGI", "SPY", "SQQQ", "T","TGT", "TSLA","TSM",
         "TSN", "UAL", "UNH", "UBER", "V", "VGLT", "VTI", "VXX", "WFC", "XOM", "XOMA", "XRX", "WMT", "WRN", "YELP", "ZM"]
