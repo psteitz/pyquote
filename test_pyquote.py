@@ -744,7 +744,7 @@ class TestIntegration:
                 host='localhost',
                 port=3306,
                 user='tinker',
-                password='hammmekhcC>>200lbs',
+                password='password',
                 database='tinker'
             )
             conn.close()
